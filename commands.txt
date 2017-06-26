@@ -1,5 +1,5 @@
 sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-pip  aptitude 
-pip install --upgrade pip
+sudo pip install ansible markupsafe
 mkdir -p ansible/roles-ubuntu/roles
 cd ansible/roles-ubuntu
 git clone https://github.com/awailly/cis-ubuntu-ansible.git roles/cis
