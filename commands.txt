@@ -1,16 +1,29 @@
+#This is not a a script.  They're notes....
+
+After building a box using ..
+https://github.com/geerlingguy/packer-ubuntu-1604.git
+
+
+
+Follow these steps as user==vagrant. 
 sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-pip  aptitude 
 sudo pip install ansible markupsafe
 mkdir -p ansible/roles-ubuntu/roles
 cd ansible/roles-ubuntu
 git clone https://github.com/awailly/cis-ubuntu-ansible.git roles/cis
-ssh-keygen -t rsa -q -N "" -f /home/ubuntu/.ssh/id_rsa
-cat /home/ubuntu/.ssh/id_rsa.pub >> /home/ubuntu/.ssh/authorized_keys
+ssh-keygen -t rsa -q -N "" -f /home/vagrant/.ssh/id_rsa
+cat /home/vagrant/.ssh/id_rsa.pub >> /home/vagrant/.ssh/authorized_keys
+
 sudo su - 
 	passwd root
 	
 sudo grub-mkpasswd-pbkdf2	
 
-cat /home/ubuntu/ansible/roles-ubuntu/roles/cis/vars/main.yml 
+
+
+Create file with the encrypted passwords for root  and grub-mkpasswd-pbkdf2 OP. The file below is an esample. Replace values with your own stuff. 
+
+cat /home/vagrant/ansible/roles-ubuntu/roles/cis/vars/main.yml 
 # This file contains variables specific to your environment
 # Set root password: 
 root_password: $6$/moqhhSt$lEh9kq6c54vym8R7gHhidGV59qEjZDPFnHXzUqGUnApicvVy6FbaG71kjEFezzWVN1mBwkQxb2ghFPXNTSMMe0
@@ -19,6 +32,14 @@ root_password: $6$/moqhhSt$lEh9kq6c54vym8R7gHhidGV59qEjZDPFnHXzUqGUnApicvVy6FbaG
 root_password_grub: grub.pbkdf2.sha512.10000.134FEC663405D2A8A9CDF33D98FCBAAC1E9661DA6BC062B05C9CCA2127A9015EC185C0B0698599486708C29BEB882930CFBAA79303649D1C72EC1AC07A17B24B.DADEDB26C0ACA143C29A241A3E08012D92E70915960EE47B0FD1FDB84D9FCAB04A3524ACA76770F950B107013993B27C84E975E2F82E226937681669463AC6DF
 
 
-cd home/ubuntu/ansible/roles-ubuntu/roles 
-ansible-playbook -b -u ubuntu  -i '/home/ubuntu/ansible/roles-ubuntu/roles/cis/tests/inventory' playbook.yml
+cd home/vagrant/ansible/roles-ubuntu
+
+cat >> playbook.yml <<EOF
+---
+- hosts: all
+  roles:
+    - cis
+EOF
+
+ansible-playbook -b -u vagrant  -i '/home/vagrant/ansible/roles-ubuntu/roles/cis/tests/inventory' playbook.yml
 
